@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>小貓頭鷹 Milo 的英語冒險島｜國小英語學習扶助（複習五年級）</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      background: linear-gradient(180deg, #F0F9FF 0%, #FFFBEB 100%);
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .font-en {
+      font-family: 'Fredoka', 'Inter', sans-serif;
+      letter-spacing: 0.01em;
+    }
+    .card-3d {
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+    .card-3d:active {
+      transform: translateY(3px) scale(0.98);
+    }
+    .btn-push {
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.14);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .btn-push:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.14);
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .animate-float {
+      animation: floatSlow 3.2s ease-in-out infinite;
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .animate-pop {
+      animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes shakeWrong {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    .animate-shake {
+      animation: shakeWrong 0.35s ease;
+    }
+    .flip-card-inner {
+      transition: transform 0.5s;
+      transform-style: preserve-3d;
+    }
+    .flip-card-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased pb-12">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-sm">
+    <div class="max-w-5xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
+      <button id="btn-home" class="flex items-center gap-2.5 text-left group focus:outline-none">
+        <div class="w-10 h-10 rounded-2xl bg-amber-100 border-2 border-amber-300 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+          <!-- Cute Owl SVG -->
+          <svg viewBox="0 0 64 64" class="w-8 h-8">
+            <circle cx="32" cy="34" r="22" fill="#8B5CF6"/>
+            <ellipse cx="32" cy="40" rx="14" ry="13" fill="#EDE9FE"/>
+            <circle cx="24" cy="28" r="7" fill="#FFF"/>
+            <circle cx="40" cy="28" r="7" fill="#FFF"/>
+            <circle cx="25" cy="28" r="3.5" fill="#1E293B"/>
+            <circle cx="41" cy="28" r="3.5" fill="#1E293B"/>
+            <circle cx="26" cy="26.5" r="1.2" fill="#FFF"/>
+            <circle cx="42" cy="26.5" r="1.2" fill="#FFF"/>
+            <polygon points="32,32 28,38 36,38" fill="#F59E0B"/>
+            <path d="M14 20 L22 14 L20 24 Z" fill="#7C3AED"/>
+            <path d="M50 20 L42 14 L44 24 Z" fill="#7C3AED"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-black text-slate-800 leading-tight">Milo 英語冒險島</h1>
+          <p class="text-xs text-slate-500 font-medium hidden sm:block">國小英語學習扶助｜五年級複習 (Units 1–13)</p>
+        </div>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <!-- Total Stars -->
+        <div class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full text-amber-700 font-bold text-sm">
+          <span>⭐</span>
+          <span id="total-stars-display">0</span>
+        </div>
+
+        <!-- Speech Rate Toggle -->
+        <button id="btn-speed" class="px-3 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-700 font-bold text-xs sm:text-sm hover:bg-sky-100 transition-colors" title="切換語音速度">
+          🐢 慢速
+        </button>
+
+        <!-- Sound Effects Toggle -->
+        <button id="btn-sfx" class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-base hover:bg-slate-200 transition-colors" title="音效開關">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-5xl mx-auto px-3 sm:px-6 pt-5">
+
+    <!-- Mode Tabs -->
+    <nav id="mode-nav" class="flex flex-wrap gap-2 mb-5 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+      <button data-mode="adventure" class="mode-tab flex-1 min-w-[130px] py-2.5 px-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all bg-sky-500 text-white shadow-sm">
+        🗺️ 圖片綜合闖關
+      </button>
+      <button data-mode="flashcards" class="mode-tab flex-1 min-w-[110px] py-2.5 px-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:bg-slate-50">
+        🃏 圖卡發音
+      </button>
+      <button data-mode="match" class="mode-tab flex-1 min-w-[110px] py-2.5 px-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:bg-slate-50">
+        🧩 單字配對
+      </button>
+      <button data-mode="qa" class="mode-tab flex-1 min-w-[110px] py-2.5 px-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:bg-slate-50">
+        💬 句型問答
+      </button>
+      <button data-mode="phonics" class="mode-tab flex-1 min-w-[120px] py-2.5 px-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:bg-slate-50">
+        🔤 Phonics 挑戰
+      </button>
+    </nav>
+
+    <!-- Unit Filter Bar (Shown in Practice Modes: flashcards, match, qa, phonics) -->
+    <section id="unit-filter-bar" class="hidden mb-5 bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <span class="text-sm font-bold text-slate-700">📚 選擇複習單元：</span>
+        <button id="btn-reset-unit" class="text-xs font-bold text-sky-600 hover:underline">全部單元</button>
+      </div>
+      <div id="unit-pills" class="flex flex-wrap gap-1.5"></div>
+    </section>
+
+    <!-- VIEW 1: Situational Adventure Map & Game -->
+    <section id="view-adventure" class="space-y-6">
+      <!-- Map Overview -->
+      <div id="adventure-map">
+        <div class="bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 rounded-3xl p-5 sm:p-7 text-white shadow-lg mb-6 relative overflow-hidden">
+          <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="space-y-2 text-center sm:text-left">
+              <span class="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold tracking-wide">六年級複習五年級｜13 單元全收錄</span>
+              <h2 class="text-2xl sm:text-3xl font-black">結合情境的綜合闖關小遊戲</h2>
+              <p class="text-sky-100 text-sm sm:text-base max-w-xl">跟著小貓頭鷹 Milo 一起闖關！每關包含圖片情境、語音發音、單字配對、句型問答與發音挑戰，集滿星星拿徽章！</p>
+            </div>
+            <div class="shrink-0 animate-float">
+              <div class="w-28 h-28 sm:w-32 sm:h-32 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center border-2 border-white/30 shadow-inner">
+                <svg viewBox="0 0 100 100" class="w-24 h-24">
+                  <circle cx="50" cy="54" r="32" fill="#FDE68A"/>
+                  <circle cx="50" cy="54" r="28" fill="#8B5CF6"/>
+                  <ellipse cx="50" cy="64" rx="18" ry="16" fill="#F5F3FF"/>
+                  <circle cx="38" cy="45" r="10" fill="#FFF"/>
+                  <circle cx="62" cy="45" r="10" fill="#FFF"/>
+                  <circle cx="39" cy="45" r="5" fill="#1E293B"/>
+                  <circle cx="61" cy="45" r="5" fill="#1E293B"/>
+                  <circle cx="41" cy="43" r="1.8" fill="#FFF"/>
+                  <circle cx="63" cy="43" r="1.8" fill="#FFF"/>
+                  <polygon points="50,51 44,59 56,59" fill="#F59E0B"/>
+                  <path d="M24 32 L34 22 L32 37 Z" fill="#6D28D9"/>
+                  <path d="M76 32 L66 22 L68 37 Z" fill="#6D28D9"/>
+                  <path d="M35 20 L50 10 L65 20 L50 24 Z" fill="#1E293B"/>
+                  <rect x="48" y="14" width="4" height="8" fill="#F59E0B"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 Stage Cards -->
+        <div id="stage-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+
+      <!-- Active Adventure Gameplay -->
+      <div id="adventure-play" class="hidden">
+        <div class="bg-white rounded-3xl shadow-md border border-slate-100 p-4 sm:p-6">
+          <!-- Stage Header & Progress -->
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+            <button id="btn-back-map" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition-colors">
+              ← 回冒險地圖
+            </button>
+            <div class="text-center">
+              <span id="adv-stage-title" class="font-black text-slate-800 text-base sm:text-lg"></span>
+              <span id="adv-step-label" class="ml-2 text-xs font-bold px-2.5 py-1 rounded-full bg-sky-100 text-sky-700">第 1 / 6 題</span>
+            </div>
+            <div class="flex items-center gap-1.5 font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 text-sm">
+              <span>得分：</span><span id="adv-score">0</span>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden mb-5">
+            <div id="adv-progress-bar" class="h-full bg-gradient-to-r from-sky-400 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
+          </div>
+
+          <!-- Dynamic Question Area -->
+          <div id="adv-question-container" class="min-h-[340px]"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: Flashcards & Pronunciation -->
+    <section id="view-flashcards" class="hidden space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+        <div>
+          <h2 class="text-lg font-black text-slate-800">🃏 圖卡單字與發音練習</h2>
+          <p class="text-xs sm:text-sm text-slate-500">點擊「🔊 聽發音」聆聽標準英語發音，點擊卡片可翻面查看中文與例句！</p>
+        </div>
+        <button id="btn-fc-shuffle" class="btn-push px-4 py-2 rounded-xl bg-indigo-500 text-white font-bold text-sm">🔀 隨機洗牌</button>
+      </div>
+      <div id="flashcards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- VIEW 3: Word Matching Game -->
+    <section id="view-match" class="hidden">
+      <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-md border border-slate-100">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-lg sm:text-xl font-black text-slate-800">🧩 圖片單字配對挑戰</h2>
+            <p class="text-xs sm:text-sm text-slate-500">先點左邊「圖片/中文」，再點右邊對應的「英文單字」（點擊英文也會發音喔！）</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-sm border border-emerald-200">
+              連擊 Combo: <span id="match-combo">0</span>🔥
+            </span>
+            <button id="btn-match-restart" class="btn-push px-4 py-2 rounded-xl bg-sky-500 text-white font-bold text-sm">🔄 換一組題目</button>
+          </div>
+        </div>
+        <div id="match-board" class="grid grid-cols-2 gap-4 sm:gap-6">
+          <div id="match-left" class="space-y-3"></div>
+          <div id="match-right" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: Sentence Q&A Theatre -->
+    <section id="view-qa" class="hidden">
+      <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-md border border-slate-100">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-lg sm:text-xl font-black text-slate-800">💬 情境句型問答小劇場</h2>
+            <p class="text-xs sm:text-sm text-slate-500">看情境圖片與問句，選出最符合的英文回答！</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-bold text-sm border border-purple-200">
+              答對：<span id="qa-score">0</span> / <span id="qa-total">0</span>
+            </span>
+            <button id="btn-qa-next" class="btn-push px-4 py-2 rounded-xl bg-purple-500 text-white font-bold text-sm">下一題 →</button>
+          </div>
+        </div>
+        <div id="qa-container"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: Phonics Challenge (Strictly pronounces whole words ONLY, never spelled letters!) -->
+    <section id="view-phonics" class="hidden space-y-5">
+      <div class="bg-gradient-to-r from-amber-400 to-orange-500 rounded-3xl p-5 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <span class="inline-block bg-white/25 px-3 py-0.5 rounded-full text-xs font-bold mb-1">Units 9–12｜sh / ch / th / bl / br / st / sk</span>
+          <h2 class="text-xl sm:text-2xl font-black">🔤 Phonics 發音挑戰館</h2>
+          <p class="text-amber-50 text-sm">點擊發音按鈕只會唸出「完整單字」，幫助你專心分辨字首與複合子音！</p>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button id="btn-phonics-quiz-mode" class="btn-push px-4 py-2.5 rounded-xl bg-white text-orange-600 font-black text-sm">🎯 聽音辨字挑戰</button>
+          <button id="btn-phonics-board-mode" class="btn-push px-4 py-2.5 rounded-xl bg-orange-700/40 text-white border border-white/40 font-bold text-sm">📖 發音單字牆</button>
+        </div>
+      </div>
+
+      <div id="phonics-quiz-area" class="bg-white rounded-3xl p-4 sm:p-6 shadow-md border border-slate-100"></div>
+      <div id="phonics-board-area" class="hidden space-y-6"></div>
+    </section>
+
+  </main>
+
+  <!-- Result / Celebration Modal -->
+  <div id="result-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border-4 border-amber-300 animate-pop">
+      <div id="modal-stars" class="text-4xl mb-2">⭐⭐⭐</div>
+      <h3 id="modal-title" class="text-2xl font-black text-slate-800 mb-1">太棒了！闖關成功！</h3>
+      <p id="modal-desc" class="text-slate-600 text-sm mb-5"></p>
+      <div class="flex gap-3 justify-center">
+        <button id="btn-modal-retry" class="btn-push px-5 py-2.5 rounded-xl bg-sky-500 text-white font-bold">🔄 再玩一次</button>
+        <button id="btn-modal-close" class="btn-push px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold">🗺️ 回地圖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-5 py-2.5 rounded-full bg-slate-800 text-white font-bold text-sm shadow-lg"></div>
+
+  <script>
+    // =========================================================================
+    // 1. CURRICULUM DATA (100% aligned to 學習扶助 六年級 複習五年級.pdf Units 1-13)
+    // =========================================================================
+    const UNITS = [
+      { id: 1, name: "U1 人物與職業", short: "U1 人物職業" },
+      { id: 2, name: "U2 數字與年齡", short: "U2 數字年齡" },
+      { id: 3, name: "U3 動作與能力", short: "U3 動作能力" },
+      { id: 4, name: "U4 情緒與感受", short: "U4 情緒感受" },
+      { id: 5, name: "U5 食物飲料動物", short: "U5 食物動物" },
+      { id: 6, name: "U6 時間整點", short: "U6 時間" },
+      { id: 7, name: "U7 天氣", short: "U7 天氣" },
+      { id: 8, name: "U8 高矮胖瘦", short: "U8 形容詞" },
+      { id: 9, name: "U9 Phonics sh/ch", short: "U9 sh/ch" },
+      { id: 10, name: "U10 Phonics th", short: "U10 th" },
+      { id: 11, name: "U11 Phonics bl/br", short: "U11 bl/br" },
+      { id: 12, name: "U12 Phonics st/sk", short: "U12 st/sk" },
+      { id: 13, name: "U13 教室與生活對話", short: "U13 教室對話" }
+    ];
+
+    // Custom SVG Generator for crisp, unmistakable educational visuals
+    function getVisualHTML(key, sizeClass = "w-24 h-24") {
+      // Clocks for Unit 6
+      const clockMatch = /^clock-(\d+)$/.exec(key);
+      if (clockMatch) {
+        const hr = parseInt(clockMatch[1], 10);
+        const angle = (hr % 12) * 30;
+        return `
+          <svg viewBox="0 0 100 100" class="${sizeClass} mx-auto">
+            <circle cx="50" cy="50" r="44" fill="#FFFBEB" stroke="#F59E0B" stroke-width="5"/>
+            <circle cx="50" cy="50" r="38" fill="#FFFFFF" stroke="#FDE68A" stroke-width="2"/>
+            <text x="50" y="20" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">12</text>
+            <text x="82" y="54" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">3</text>
+            <text x="50" y="86" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">6</text>
+            <text x="18" y="54" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">9</text>
+            <!-- Minute hand pointing at 12 -->
+            <line x1="50" y1="50" x2="50" y2="22" stroke="#0EA5E9" stroke-width="3.5" stroke-linecap="round"/>
+            <!-- Hour hand -->
+            <line x1="50" y1="50" x2="50" y2="30" stroke="#1E293B" stroke-width="5" stroke-linecap="round" transform="rotate(${angle} 50 50)"/>
+            <circle cx="50" cy="50" r="4" fill="#EF4444"/>
+          </svg>`;
+      }
+
+      // Adjectives visual comparisons for Unit 8
+      const adjSVGs = {
+        "tall": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><rect x="38" y="14" width="24" height="74" rx="10" fill="#38BDF8"/><circle cx="50" cy="24" r="10" fill="#FDE68A"/><path d="M18 88 L18 20 M12 26 L18 18 L24 26" stroke="#EF4444" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`,
+        "short": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><rect x="38" y="52" width="24" height="36" rx="10" fill="#34D399"/><circle cx="50" cy="56" r="9" fill="#FDE68A"/><path d="M18 88 L18 52 M12 58 L18 50 L24 58" stroke="#EF4444" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`,
+        "big": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><circle cx="50" cy="52" r="38" fill="#FB923C"/><circle cx="38" cy="45" r="4" fill="#1E293B"/><circle cx="62" cy="45" r="4" fill="#1E293B"/><path d="M40 62 Q50 72 60 62" stroke="#1E293B" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>`,
+        "small": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><circle cx="50" cy="65" r="16" fill="#A78BFA"/><circle cx="45" cy="62" r="2.2" fill="#1E293B"/><circle cx="55" cy="62" r="2.2" fill="#1E293B"/><path d="M46 70 Q50 73 54 70" stroke="#1E293B" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+        "fat": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><ellipse cx="50" cy="56" rx="34" ry="28" fill="#F472B6"/><circle cx="50" cy="24" r="12" fill="#FDE68A"/><circle cx="46" cy="22" r="2" fill="#1E293B"/><circle cx="54" cy="22" r="2" fill="#1E293B"/></svg>`,
+        "thin": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><rect x="42" y="34" width="16" height="52" rx="8" fill="#2DD4BF"/><circle cx="50" cy="22" r="11" fill="#FDE68A"/><circle cx="46" cy="20" r="2" fill="#1E293B"/><circle cx="54" cy="20" r="2" fill="#1E293B"/></svg>`,
+        "color-black": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><circle cx="50" cy="50" r="36" fill="#1E293B" stroke="#CBD5E1" stroke-width="4"/></svg>`,
+        "color-blue": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><circle cx="50" cy="50" r="36" fill="#3B82F6" stroke="#BFDBFE" stroke-width="4"/></svg>`,
+        "color-brown": `<svg viewBox="0 0 100 100" class="${sizeClass} mx-auto"><circle cx="50" cy="50" r="36" fill="#92400E" stroke="#FDE68A" stroke-width="4"/></svg>`,
+        "number-badge": (num) => `<div class="${sizeClass} mx-auto rounded-3xl bg-gradient-to-br from-sky-400 to-indigo-500 text-white font-en font-black text-4xl flex items-center justify-center shadow-md border-4 border-white">${num}</div>`
+      };
+
+      if (adjSVGs[key]) return typeof adjSVGs[key] === 'function' ? adjSVGs[key]() : adjSVGs[key];
+      if (key.startsWith("num-")) {
+        return adjSVGs["number-badge"](key.replace("num-", ""));
+      }
+
+      // Rich Emoji / Icon Mapping
+      const emojiMap = {
+        "bird": "🐦", "frog": "🐸", "who": "❓", "mother": "👩", "father": "👨",
+        "brother": "👦", "sister": "👧", "doctor": "👨‍⚕️", "nurse": "👩‍⚕️",
+        "student": "🎒", "teacher": "👩‍🏫",
+        "dance": "💃", "read": "📖", "sing": "🎤", "swim": "🏊", "write": "✏️",
+        "can": "👍", "cant": "🙅", "do": "🏃",
+        "happy": "😄", "sad": "😢", "tired": "😫", "not": "🚫",
+        "want": "🤩", "like": "❤️", "see": "👀",
+        "pizza": "🍕", "pie": "🥧", "rice": "🍚", "juice": "🧃", "tea": "🍵",
+        "water": "💧", "cake": "🍰", "milk": "🥛", "cats": "🐱", "dogs": "🐶",
+        "apples": "🍎", "bananas": "🍌", "eggs": "🥚",
+        "hot": "🥵", "cold": "🥶", "warm": "🌤️", "cool": "🍃",
+        "sunny": "☀️", "rainy": "🌧️", "cloudy": "☁️", "windy": "💨",
+        "boy": "👦", "girl": "👧",
+        // Phonics U9-U12
+        "shark": "🦈", "ship": "🚢", "shorts": "🩳", "shell": "🐚", "sheep": "🐑", "shoes": "👟", "shirt": "👕",
+        "chess": "♟️", "chair": "🪑", "chinese": "📘", "chips": "🍟", "cheese": "🧀", "cherries": "🍒", "church": "⛪",
+        "thin-ph": "🥢", "thick": "📚", "thursday": "📅", "thankyou": "🙏", "thumb": "👍", "thirty": "3️⃣0️⃣", "mouth": "👄",
+        "this": "👇", "that": "👉", "those": "👉👉", "there": "📍",
+        "blow": "🌬️", "blanket": "🛏️", "blender": "🥤", "blocks": "🧱", "bling": "✨",
+        "bread": "🍞", "brush": "🖌️", "bridge": "🌉", "bricks": "🧱", "broom": "🧹",
+        "star": "⭐", "stones": "🪨", "stairs": "🪜", "story": "📖",
+        "skunk": "🦨", "ski": "⛷️", "sky": "🌌", "skirt": "👗", "skate": "🛹",
+        // U13
+        "ok": "👌", "late": "⏰", "idk": "🤷", "idea": "💡", "stop": "🛑", "lineup": "🚶‍♂️🚶‍♀️", "hurry": "⚡", "thatsok": "😊", "tryagain": "💪"
+      };
+      const icon = emojiMap[key] || "✨";
+      return `<div class="${sizeClass} mx-auto flex items-center justify-center text-6xl sm:text-7xl drop-shadow-sm select-none">${icon}</div>`;
+    }
+
+    // Complete Vocabulary Bank
+    const VOCAB = [
+      // Unit 1
+      { unit: 1, en: "a bird", zh: "小鳥", visual: "bird", ex: "It's a bird." },
+      { unit: 1, en: "a frog", zh: "青蛙", visual: "frog", ex: "It's a frog." },
+      { unit: 1, en: "Who", zh: "誰", visual: "who", ex: "Who is he?" },
+      { unit: 1, en: "mother", zh: "母親", visual: "mother", ex: "She's my mother." },
+      { unit: 1, en: "father", zh: "父親", visual: "father", ex: "He's my father." },
+      { unit: 1, en: "brother", zh: "兄弟", visual: "brother", ex: "He's my brother." },
+      { unit: 1, en: "sister", zh: "姊妹", visual: "sister", ex: "She's my sister." },
+      { unit: 1, en: "a doctor", zh: "醫生", visual: "doctor", ex: "He is a doctor." },
+      { unit: 1, en: "a nurse", zh: "護士", visual: "nurse", ex: "She is a nurse." },
+      { unit: 1, en: "a student", zh: "學生", visual: "student", ex: "He's my student." },
+      { unit: 1, en: "a teacher", zh: "老師", visual: "teacher", ex: "She's my teacher." },
+
+      // Unit 2
+      { unit: 2, en: "one", zh: "1", visual: "num-1", ex: "I'm one year old." },
+      { unit: 2, en: "three", zh: "3", visual: "num-3", ex: "I'm three years old." },
+      { unit: 2, en: "five", zh: "5", visual: "num-5", ex: "I'm five." },
+      { unit: 2, en: "eight", zh: "8", visual: "num-8", ex: "I'm eight years old." },
+      { unit: 2, en: "nine", zh: "9", visual: "num-9", ex: "I'm nine." },
+      { unit: 2, en: "ten", zh: "10", visual: "num-10", ex: "I'm ten years old." },
+      { unit: 2, en: "eleven", zh: "11", visual: "num-11", ex: "I'm eleven." },
+      { unit: 2, en: "twelve", zh: "12", visual: "num-12", ex: "I'm twelve years old." },
+      { unit: 2, en: "thirteen", zh: "13", visual: "num-13", ex: "I'm thirteen." },
+      { unit: 2, en: "fourteen", zh: "14", visual: "num-14", ex: "I'm fourteen." },
+      { unit: 2, en: "fifteen", zh: "15", visual: "num-15", ex: "I'm fifteen." },
+      { unit: 2, en: "sixteen", zh: "16", visual: "num-16", ex: "I'm sixteen." },
+
+      // Unit 3
+      { unit: 3, en: "dance", zh: "跳舞", visual: "dance", ex: "I can dance." },
+      { unit: 3, en: "read", zh: "看書", visual: "read", ex: "I can read." },
+      { unit: 3, en: "sing", zh: "唱歌", visual: "sing", ex: "I can sing." },
+      { unit: 3, en: "swim", zh: "游泳", visual: "swim", ex: "I can swim." },
+      { unit: 3, en: "write", zh: "寫字", visual: "write", ex: "I can write." },
+      { unit: 3, en: "can", zh: "會", visual: "can", ex: "Yes, I can." },
+      { unit: 3, en: "can't", zh: "不會", visual: "cant", ex: "No, I can't." },
+
+      // Unit 4
+      { unit: 4, en: "happy", zh: "開心的", visual: "happy", ex: "She's happy." },
+      { unit: 4, en: "sad", zh: "傷心的", visual: "sad", ex: "He's sad." },
+      { unit: 4, en: "tired", zh: "累的", visual: "tired", ex: "I'm tired." },
+
+      // Unit 5
+      { unit: 5, en: "want", zh: "想要", visual: "want", ex: "What do you want?" },
+      { unit: 5, en: "like", zh: "喜歡", visual: "like", ex: "What do you like?" },
+      { unit: 5, en: "see", zh: "看到", visual: "see", ex: "What do you see?" },
+      { unit: 5, en: "pizza", zh: "披薩", visual: "pizza", ex: "I want pizza." },
+      { unit: 5, en: "pie", zh: "派", visual: "pie", ex: "I like pie." },
+      { unit: 5, en: "rice", zh: "米飯", visual: "rice", ex: "I want rice." },
+      { unit: 5, en: "juice", zh: "果汁", visual: "juice", ex: "I want juice." },
+      { unit: 5, en: "tea", zh: "茶", visual: "tea", ex: "I like tea." },
+      { unit: 5, en: "water", zh: "白開水", visual: "water", ex: "I like water." },
+      { unit: 5, en: "cake", zh: "蛋糕", visual: "cake", ex: "I like cake." },
+      { unit: 5, en: "milk", zh: "牛奶", visual: "milk", ex: "I want milk." },
+      { unit: 5, en: "cats", zh: "貓", visual: "cats", ex: "I see cats." },
+      { unit: 5, en: "dogs", zh: "狗", visual: "dogs", ex: "I see dogs." },
+      { unit: 5, en: "apples", zh: "蘋果", visual: "apples", ex: "I like apples." },
+      { unit: 5, en: "bananas", zh: "香蕉", visual: "bananas", ex: "I like bananas." },
+      { unit: 5, en: "eggs", zh: "蛋", visual: "eggs", ex: "I want eggs." },
+
+      // Unit 6
+      { unit: 6, en: "one o'clock", zh: "一點整", visual: "clock-1", ex: "It's one o'clock." },
+      { unit: 6, en: "three o'clock", zh: "三點整", visual: "clock-3", ex: "It's three o'clock." },
+      { unit: 6, en: "five o'clock", zh: "五點整", visual: "clock-5", ex: "It's five o'clock." },
+      { unit: 6, en: "seven o'clock", zh: "七點整", visual: "clock-7", ex: "It's seven o'clock." },
+      { unit: 6, en: "eight o'clock", zh: "八點整", visual: "clock-8", ex: "It's eight o'clock." },
+      { unit: 6, en: "nine o'clock", zh: "九點整", visual: "clock-9", ex: "It's nine o'clock." },
+      { unit: 6, en: "eleven o'clock", zh: "十一點整", visual: "clock-11", ex: "It's eleven o'clock." },
+      { unit: 6, en: "twelve o'clock", zh: "十二點整", visual: "clock-12", ex: "It's twelve o'clock." },
+
+      // Unit 7
+      { unit: 7, en: "hot", zh: "熱的", visual: "hot", ex: "It's hot." },
+      { unit: 7, en: "cold", zh: "冷的", visual: "cold", ex: "It's cold." },
+      { unit: 7, en: "warm", zh: "溫暖的", visual: "warm", ex: "It's warm." },
+      { unit: 7, en: "cool", zh: "涼爽的", visual: "cool", ex: "It's cool." },
+      { unit: 7, en: "sunny", zh: "晴朗的", visual: "sunny", ex: "It's sunny." },
+      { unit: 7, en: "rainy", zh: "下雨的", visual: "rainy", ex: "It's rainy." },
+      { unit: 7, en: "cloudy", zh: "陰天的", visual: "cloudy", ex: "It's cloudy." },
+      { unit: 7, en: "windy", zh: "颳風的", visual: "windy", ex: "It's windy." },
+
+      // Unit 8
+      { unit: 8, en: "tall", zh: "高的", visual: "tall", ex: "The boy is tall." },
+      { unit: 8, en: "short", zh: "矮的", visual: "short", ex: "The girl is short." },
+      { unit: 8, en: "big", zh: "大的", visual: "big", ex: "The boy is big." },
+      { unit: 8, en: "small", zh: "小的", visual: "small", ex: "It is small." },
+      { unit: 8, en: "fat", zh: "胖的", visual: "fat", ex: "The boy is fat." },
+      { unit: 8, en: "thin", zh: "瘦的", visual: "thin", ex: "The girl is thin." },
+      { unit: 8, en: "boy", zh: "男生", visual: "boy", ex: "The boy is tall." },
+      { unit: 8, en: "girl", zh: "女生", visual: "girl", ex: "The girl is tall." },
+
+      // Unit 9 Phonics (sh / ch)
+      { unit: 9, en: "shark", zh: "鯊魚", visual: "shark", phonics: "sh", ex: "sh - shark" },
+      { unit: 9, en: "ship", zh: "船", visual: "ship", phonics: "sh", ex: "sh - ship" },
+      { unit: 9, en: "shorts", zh: "短褲", visual: "shorts", phonics: "sh", ex: "sh - shorts" },
+      { unit: 9, en: "shell", zh: "貝殼", visual: "shell", phonics: "sh", ex: "sh - shell" },
+      { unit: 9, en: "sheep", zh: "綿羊", visual: "sheep", phonics: "sh", ex: "sh - sheep" },
+      { unit: 9, en: "shoes", zh: "鞋子", visual: "shoes", phonics: "sh", ex: "sh - shoes" },
+      { unit: 9, en: "shirt", zh: "襯衫", visual: "shirt", phonics: "sh", ex: "sh - shirt" },
+      { unit: 9, en: "chess", zh: "西洋棋", visual: "chess", phonics: "ch", ex: "ch - chess" },
+      { unit: 9, en: "chair", zh: "椅子", visual: "chair", phonics: "ch", ex: "ch - chair" },
+      { unit: 9, en: "Chinese", zh: "國語", visual: "chinese", phonics: "ch", ex: "ch - Chinese" },
+      { unit: 9, en: "chips", zh: "洋芋片", visual: "chips", phonics: "ch", ex: "ch - chips" },
+      { unit: 9, en: "cheese", zh: "起司", visual: "cheese", phonics: "ch", ex: "ch - cheese" },
+      { unit: 9, en: "cherries", zh: "櫻桃", visual: "cherries", phonics: "ch", ex: "ch - cherries" },
+      { unit: 9, en: "church", zh: "教堂", visual: "church", phonics: "ch", ex: "ch - church" },
+
+      // Unit 10 Phonics (th 無聲 / 有聲)
+      { unit: 10, en: "thin", zh: "瘦的", visual: "thin-ph", phonics: "th(無聲)", ex: "th 無聲 - thin" },
+      { unit: 10, en: "thick", zh: "厚的", visual: "thick", phonics: "th(無聲)", ex: "th 無聲 - thick" },
+      { unit: 10, en: "Thursday", zh: "星期四", visual: "thursday", phonics: "th(無聲)", ex: "th 無聲 - Thursday" },
+      { unit: 10, en: "Thank you", zh: "謝謝", visual: "thankyou", phonics: "th(無聲)", ex: "th 無聲 - Thank you." },
+      { unit: 10, en: "thumb", zh: "大拇指", visual: "thumb", phonics: "th(無聲)", ex: "th 無聲 - thumb" },
+      { unit: 10, en: "thirty", zh: "三十", visual: "thirty", phonics: "th(無聲)", ex: "th 無聲 - thirty" },
+      { unit: 10, en: "mouth", zh: "嘴巴", visual: "mouth", phonics: "th(無聲)", ex: "th 無聲 - mouth" },
+      { unit: 10, en: "this", zh: "這個", visual: "this", phonics: "th(有聲)", ex: "th 有聲 - this" },
+      { unit: 10, en: "mother", zh: "母親", visual: "mother", phonics: "th(有聲)", ex: "th 有聲 - mother" },
+      { unit: 10, en: "father", zh: "父親", visual: "father", phonics: "th(有聲)", ex: "th 有聲 - father" },
+      { unit: 10, en: "brother", zh: "兄弟", visual: "brother", phonics: "th(有聲)", ex: "th 有聲 - brother" },
+      { unit: 10, en: "that", zh: "那個", visual: "that", phonics: "th(有聲)", ex: "th 有聲 - that" },
+      { unit: 10, en: "those", zh: "那些", visual: "those", phonics: "th(有聲)", ex: "th 有聲 - those" },
+      { unit: 10, en: "there", zh: "那裡", visual: "there", phonics: "th(有聲)", ex: "th 有聲 - there" },
+
+      // Unit 11 Phonics (bl / br)
+      { unit: 11, en: "blow", zh: "吹", visual: "blow", phonics: "bl", ex: "bl - blow" },
+      { unit: 11, en: "blanket", zh: "毯子", visual: "blanket", phonics: "bl", ex: "bl - blanket" },
+      { unit: 11, en: "blender", zh: "果汁機", visual: "blender", phonics: "bl", ex: "bl - blender" },
+      { unit: 11, en: "blocks", zh: "積木", visual: "blocks", phonics: "bl", ex: "bl - blocks" },
+      { unit: 11, en: "black", zh: "黑色的", visual: "color-black", phonics: "bl", ex: "bl - black" },
+      { unit: 11, en: "bling", zh: "閃亮", visual: "bling", phonics: "bl", ex: "bl - bling" },
+      { unit: 11, en: "blue", zh: "藍色的", visual: "color-blue", phonics: "bl", ex: "bl - blue" },
+      { unit: 11, en: "bread", zh: "麵包", visual: "bread", phonics: "br", ex: "br - bread" },
+      { unit: 11, en: "brush", zh: "刷子", visual: "brush", phonics: "br", ex: "br - brush" },
+      { unit: 11, en: "bridge", zh: "橋", visual: "bridge", phonics: "br", ex: "br - bridge" },
+      { unit: 11, en: "bricks", zh: "磚塊", visual: "bricks", phonics: "br", ex: "br - bricks" },
+      { unit: 11, en: "broom", zh: "掃把", visual: "broom", phonics: "br", ex: "br - broom" },
+      { unit: 11, en: "brown", zh: "咖啡色", visual: "color-brown", phonics: "br", ex: "br - brown" },
+
+      // Unit 12 Phonics (st / sk)
+      { unit: 12, en: "star", zh: "星星", visual: "star", phonics: "st", ex: "st - star" },
+      { unit: 12, en: "student", zh: "學生", visual: "student", phonics: "st", ex: "st - student" },
+      { unit: 12, en: "stones", zh: "石頭", visual: "stones", phonics: "st", ex: "st - stones" },
+      { unit: 12, en: "stairs", zh: "樓梯", visual: "stairs", phonics: "st", ex: "st - stairs" },
+      { unit: 12, en: "story", zh: "故事", visual: "story", phonics: "st", ex: "st - story" },
+      { unit: 12, en: "skunk", zh: "臭鼬鼠", visual: "skunk", phonics: "sk", ex: "sk - skunk" },
+      { unit: 12, en: "ski", zh: "滑雪", visual: "ski", phonics: "sk", ex: "sk - ski" },
+      { unit: 12, en: "sky", zh: "天空", visual: "sky", phonics: "sk", ex: "sk - sky" },
+      { unit: 12, en: "skirt", zh: "裙子", visual: "skirt", phonics: "sk", ex: "sk - skirt" },
+      { unit: 12, en: "skate", zh: "滑板", visual: "skate", phonics: "sk", ex: "sk - skate" },
+
+      // Unit 13 Classroom & Daily Expressions
+      { unit: 13, en: "Are you OK?", zh: "你還好嗎？", visual: "ok", ex: "Are you OK?" },
+      { unit: 13, en: "Sorry, I'm late.", zh: "抱歉，我遲到了。", visual: "late", ex: "Sorry, I'm late." },
+      { unit: 13, en: "I don't know.", zh: "我不知道。", visual: "idk", ex: "I don't know." },
+      { unit: 13, en: "Good idea.", zh: "好主意。", visual: "idea", ex: "Good idea." },
+      { unit: 13, en: "Stop.", zh: "停下來。", visual: "stop", ex: "Stop." },
+      { unit: 13, en: "Line up.", zh: "排隊。", visual: "lineup", ex: "Line up." },
+      { unit: 13, en: "Hurry up.", zh: "快一點。", visual: "hurry", ex: "Hurry up." },
+      { unit: 13, en: "That's OK.", zh: "沒關係。", visual: "thatsok", ex: "That's OK." },
+      { unit: 13, en: "Try again.", zh: "再試一次。", visual: "tryagain", ex: "Try again." }
+    ];
+
+    // Sentence Q&A Bank (aligned to PDF 1-1, 2-1, 3-1, 4-1, 5-1, 6-1, 7-1, 8-1, 13)
+    const QA_BANK = [
+      { unit: 1, visual: "bird", q: "What is it?", qZh: "它是什麼？", ans: "It's a bird.", opts: ["It's a bird.", "It's a frog.", "He's my brother.", "She's my sister."] },
+      { unit: 1, visual: "frog", q: "What is it?", qZh: "它是什麼？", ans: "It's a frog.", opts: ["It's a frog.", "It's a bird.", "He's my father.", "She's my teacher."] },
+      { unit: 1, visual: "teacher", q: "Who is she?", qZh: "她是誰？", ans: "She's my teacher.", opts: ["She's my teacher.", "He's my student.", "He's my brother.", "It's a bird."] },
+      { unit: 1, visual: "father", q: "Who is he?", qZh: "他是誰？", ans: "He's my father.", opts: ["He's my father.", "She's my mother.", "She's my sister.", "It's a frog."] },
+      { unit: 1, visual: "mother", q: "Who is she?", qZh: "她是誰？", ans: "She's my mother.", opts: ["She's my mother.", "He's my father.", "He's my brother.", "He's my student."] },
+      { unit: 2, visual: "num-10", q: "How old are you?", qZh: "你幾歲？", ans: "I'm ten years old.", opts: ["I'm ten years old.", "I'm five.", "I'm three years old.", "I'm twelve years old."] },
+      { unit: 2, visual: "num-8", q: "How old are you?", qZh: "你幾歲？", ans: "I'm eight years old.", opts: ["I'm eight years old.", "I'm eleven.", "I'm one year old.", "I'm nine."] },
+      { unit: 3, visual: "dance", q: "What can you do?", qZh: "你會做什麼？", ans: "I can dance.", opts: ["I can dance.", "I can swim.", "I can read.", "I can write."] },
+      { unit: 3, visual: "swim", q: "Can you swim? (不會)", qZh: "你會游泳嗎？(不會)", ans: "No, I can't.", opts: ["No, I can't.", "Yes, I can.", "I can sing.", "I can dance."] },
+      { unit: 3, visual: "sing", q: "Can you sing? (會)", qZh: "你會唱歌嗎？(會)", ans: "Yes, I can.", opts: ["Yes, I can.", "No, I can't.", "I can read.", "I can write."] },
+      { unit: 4, visual: "happy", q: "How is she?", qZh: "她感覺如何？", ans: "She's happy.", opts: ["She's happy.", "He's sad.", "I'm tired.", "She's not happy."] },
+      { unit: 4, visual: "sad", q: "How is he?", qZh: "他感覺如何？", ans: "He's sad.", opts: ["He's sad.", "She's happy.", "I'm not tired.", "You're tired."] },
+      { unit: 4, visual: "tired", q: "How are you?", qZh: "你感覺如何？", ans: "I'm tired.", opts: ["I'm tired.", "He's sad.", "She's happy.", "He's not sad."] },
+      { unit: 5, visual: "pizza", q: "What do you want?", qZh: "你想要什麼？", ans: "I want pizza.", opts: ["I want pizza.", "I like tea.", "I see dogs.", "I want juice."] },
+      { unit: 5, visual: "pie", q: "What do you like?", qZh: "你喜歡什麼？", ans: "I like pie.", opts: ["I like pie.", "I want rice.", "I see cats.", "I like water."] },
+      { unit: 5, visual: "cats", q: "What do you see?", qZh: "你看到什麼？", ans: "I see cats.", opts: ["I see cats.", "I see dogs.", "I want pizza.", "I like tea."] },
+      { unit: 6, visual: "clock-5", q: "What time is it?", qZh: "現在幾點？", ans: "It's five o'clock.", opts: ["It's five o'clock.", "It's three o'clock.", "It's nine o'clock.", "It's twelve o'clock."] },
+      { unit: 6, visual: "clock-9", q: "What time is it?", qZh: "現在幾點？", ans: "It's nine o'clock.", opts: ["It's nine o'clock.", "It's one o'clock.", "It's seven o'clock.", "It's eleven o'clock."] },
+      { unit: 6, visual: "clock-12", q: "What time is it?", qZh: "現在幾點？", ans: "It's twelve o'clock.", opts: ["It's twelve o'clock.", "It's eight o'clock.", "It's five o'clock.", "It's three o'clock."] },
+      { unit: 7, visual: "sunny", q: "How's the weather?", qZh: "天氣如何？", ans: "It's sunny.", opts: ["It's sunny.", "It's rainy.", "It's cold.", "It's windy."] },
+      { unit: 7, visual: "rainy", q: "How's the weather?", qZh: "天氣如何？", ans: "It's rainy.", opts: ["It's rainy.", "It's sunny.", "It's hot.", "It's warm."] },
+      { unit: 7, visual: "windy", q: "How's the weather?", qZh: "天氣如何？", ans: "It's windy.", opts: ["It's windy.", "It's cloudy.", "It's cool.", "It's hot."] },
+      { unit: 8, visual: "tall", q: "Look at the boy.", qZh: "看看這個男生。", ans: "The boy is tall.", opts: ["The boy is tall.", "The boy is short.", "The girl is thin.", "The girl is small."] },
+      { unit: 8, visual: "short", q: "Look at the girl.", qZh: "看看這個女生。", ans: "The girl is short.", opts: ["The girl is short.", "The girl is tall.", "The boy is big.", "The boy is fat."] },
+      { unit: 13, visual: "late", q: "上課鐘響了，同學跑進教室說：", qZh: "情境對話", ans: "Sorry, I'm late.", opts: ["Sorry, I'm late.", "Line up.", "Good idea.", "I don't know."] },
+      { unit: 13, visual: "ok", q: "看到同學跌倒，老師關心地問：", qZh: "情境對話", ans: "Are you OK?", opts: ["Are you OK?", "Hurry up.", "Stop.", "Try again."] },
+      { unit: 13, visual: "lineup", q: "準備去操場，老師請大家：", qZh: "情境對話", ans: "Line up.", opts: ["Line up.", "That's OK.", "I don't know.", "Sorry, I'm late."] }
+    ];
+
+    // 6 Situational Adventure Stages
+    const STAGES = [
+      {
+        id: 1, title: "第 1 關：溫馨小鎮", subtitle: "人物職業與高矮胖瘦",
+        units: [1, 8], color: "from-sky-400 to-blue-500", icon: "🏡", badge: "小鎮探險家"
+      },
+      {
+        id: 2, title: "第 2 關：才藝生日派對", subtitle: "數字年齡與動作能力",
+        units: [2, 3], color: "from-emerald-400 to-teal-500", icon: "🎂", badge: "派對小達人"
+      },
+      {
+        id: 3, title: "第 3 關：野餐心情樹屋", subtitle: "情緒感受與美食寵物",
+        units: [4, 5], color: "from-rose-400 to-pink-500", icon: "🍕", badge: "野餐小精靈"
+      },
+      {
+        id: 4, title: "第 4 關：時鐘氣象台", subtitle: "整點時間與天氣變化",
+        units: [6, 7], color: "from-amber-400 to-orange-500", icon: "⏰", badge: "氣象小主播"
+      },
+      {
+        id: 5, title: "第 5 關：Phonics 魔法森林", subtitle: "sh/ch, th, bl/br, st/sk",
+        units: [9, 10, 11, 12], color: "from-violet-400 to-purple-600", icon: "🔮", badge: "發音魔導士"
+      },
+      {
+        id: 6, title: "第 6 關：校園生活小劇場", subtitle: "實用教室與生活對話",
+        units: [13], color: "from-indigo-400 to-cyan-500", icon: "🏫", badge: "英語小隊長"
+      }
+    ];
+
+    // =========================================================================
+    // 2. AUDIO ENGINE (Web Speech API + Web Audio API)
+    // =========================================================================
+    const state = {
+      mode: "adventure",
+      selectedUnit: 0, // 0 = all
+      speechRate: 0.72, // default slow for remedial learners
+      sfxEnabled: true,
+      stars: {}, // { stageId: 1..3 }
+      adv: { stage: null, questions: [], idx: 0, score: 0 },
+      match: { selectedLeft: null, pairs: [], matchedCount: 0, combo: 0 },
+      qa: { list: [], idx: 0, score: 0, total: 0, answered: false },
+      phonics: { subMode: "quiz", list: [], idx: 0, score: 0 }
+    };
+
+    // Load saved stars safely
+    try {
+      const saved = localStorage.getItem("milo_g5_stars");
+      if (saved) state.stars = JSON.parse(saved);
+    } catch (e) {}
+
+    function saveStars() {
+      try {
+        localStorage.setItem("milo_g5_stars", JSON.stringify(state.stars));
+      } catch (e) {}
+    }
+
+    let audioCtx = null;
+    function playSFX(type) {
+      if (!state.sfxEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === "correct") {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.36);
+        } else if (type === "wrong") {
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(240, now);
+          osc.frequency.setValueAtTime(190, now + 0.12);
+          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === "click") {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        } else if (type === "win") {
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            o.type = "sine";
+            o.frequency.setValueAtTime(freq, now + i * 0.1);
+            g.gain.setValueAtTime(0.16, now + i * 0.1);
+            g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.35);
+            o.start(now + i * 0.1);
+            o.stop(now + i * 0.1 + 0.36);
+          });
+        }
+      } catch (e) {}
+    }
+
+    // IMPORTANT: Phonics playback ONLY pronounces the whole word, NEVER spelled-out letters!
+    function speakWord(text) {
+      if (!("speechSynthesis" in window)) {
+        showToast("您的瀏覽器不支援語音發音");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-US";
+      utter.rate = state.speechRate;
+      utter.pitch = 1.05;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v => v.lang === "en-US" && /Samantha|Google US English|Alex|Jenny|Aria/i.test(v.name))
+                     || voices.find(v => v.lang.startsWith("en-US"))
+                     || voices.find(v => v.lang.startsWith("en"));
+      if (preferred) utter.voice = preferred;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.remove("hidden");
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.add("hidden"), 2200);
+    }
+
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function getFilteredVocab() {
+      if (state.selectedUnit === 0) return VOCAB;
+      return VOCAB.filter(v => v.unit === state.selectedUnit);
+    }
+
+    // =========================================================================
+    // 3. UI & MODE NAVIGATION
+    // =========================================================================
+    function updateStarsHeader() {
+      const total = Object.values(state.stars).reduce((a, b) => a + b, 0);
+      document.getElementById("total-stars-display").textContent = `${total} / ${STAGES.length * 3}`;
+    }
+
+    function renderUnitPills() {
+      const container = document.getElementById("unit-pills");
+      const allBtn = `<button data-unit="0" class="unit-pill px-3 py-1 rounded-full text-xs font-bold border transition-all ${state.selectedUnit === 0 ? 'bg-sky-500 text-white border-sky-500 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">全部 (1–13)</button>`;
+      const unitBtns = UNITS.map(u => `
+        <button data-unit="${u.id}" class="unit-pill px-3 py-1 rounded-full text-xs font-bold border transition-all ${state.selectedUnit === u.id ? 'bg-sky-500 text-white border-sky-500 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">${u.short}</button>
+      `).join("");
+      container.innerHTML = allBtn + unitBtns;
+
+      container.querySelectorAll(".unit-pill").forEach(btn => {
+        btn.addEventListener("click", () => {
+          playSFX("click");
+          state.selectedUnit = parseInt(btn.dataset.unit, 10);
+          renderUnitPills();
+          refreshActiveMode();
+        });
+      });
+    }
+
+    function switchMode(mode) {
+      state.mode = mode;
+      playSFX("click");
+      document.querySelectorAll(".mode-tab").forEach(tab => {
+        const active = tab.dataset.mode === mode;
+        tab.className = `mode-tab flex-1 min-w-[110px] py-2.5 px-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 transition-all ${
+          active ? "bg-sky-500 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
+        }`;
+      });
+
+      ["adventure", "flashcards", "match", "qa", "phonics"].forEach(v => {
+        document.getElementById(`view-${v}`).classList.toggle("hidden", v !== mode);
+      });
+
+      const showFilter = ["flashcards", "match", "qa"].includes(mode);
+      document.getElementById("unit-filter-bar").classList.toggle("hidden", !showFilter);
+
+      refreshActiveMode();
+    }
+
+    function refreshActiveMode() {
+      if (state.mode === "adventure") renderAdventureMap();
+      if (state.mode === "flashcards") renderFlashcards();
+      if (state.mode === "match") initMatchGame();
+      if (state.mode === "qa") initQAGame();
+      if (state.mode === "phonics") initPhonicsMode();
+    }
+
+    // =========================================================================
+    // 4. MODE 1: SITUATIONAL ADVENTURE MODE (圖片綜合闖關)
+    // =========================================================================
+    function renderAdventureMap() {
+      document.getElementById("adventure-map").classList.remove("hidden");
+      document.getElementById("adventure-play").classList.add("hidden");
+      const grid = document.getElementById("stage-grid");
+      grid.innerHTML = STAGES.map(st => {
+        const stars = state.stars[st.id] || 0;
+        const starIcons = [1, 2, 3].map(i => i <= stars ? "⭐" : "☆").join("");
+        return `
+          <div class="card-3d bg-white rounded-3xl p-5 shadow-md border-2 border-slate-100 hover:border-sky-300 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${st.color} flex items-center justify-center text-3xl shadow-sm">${st.icon}</div>
+                <span class="text-lg tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">${starIcons}</span>
+              </div>
+              <h3 class="text-lg font-black text-slate-800">${st.title}</h3>
+              <p class="text-sm text-slate-500 mb-3">${st.subtitle}</p>
+              <div class="flex flex-wrap gap-1 mb-4">
+                ${st.units.map(u => `<span class="text-xs font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">Unit ${u}</span>`).join("")}
+              </div>
+            </div>
+            <button data-stage="${st.id}" class="btn-start-stage btn-push w-full py-2.5 rounded-2xl bg-gradient-to-r ${st.color} text-white font-black text-base">
+              🚀 開始闖關
+            </button>
+          </div>`;
+      }).join("");
+
+      grid.querySelectorAll(".btn-start-stage").forEach(btn => {
+        btn.addEventListener("click", () => startStage(parseInt(btn.dataset.stage, 10)));
+      });
+    }
+
+    function buildStageQuestions(stage) {
+      const stageVocab = VOCAB.filter(v => stage.units.includes(v.unit));
+      const stageQA = QA_BANK.filter(q => stage.units.includes(q.unit));
+      const questions = [];
+
+      // 2 Listen & Pick Picture/Word questions
+      shuffle(stageVocab).slice(0, 2).forEach(item => {
+        const distractors = shuffle(stageVocab.filter(v => v.en !== item.en)).slice(0, 3);
+        questions.push({
+          type: "listen-pick",
+          promptZh: "🎧 聽一聽，選出正確的圖片與單字！",
+          target: item,
+          options: shuffle([item, ...distractors])
+        });
+      });
+
+      // 1 Mini Matching question (3 pairs)
+      const matchItems = shuffle(stageVocab).slice(0, 3);
+      if (matchItems.length >= 3) {
+        questions.push({
+          type: "mini-match",
+          promptZh: "🧩 情境單字配對：把左邊的圖片配對到右邊英文！",
+          items: matchItems
+        });
+      }
+
+      // 2 Sentence Q&A questions (or Phonics challenge for Stage 5)
+      if (stage.id === 5) {
+        shuffle(stageVocab).slice(0, 2).forEach(item => {
+          const allPhonics = ["sh", "ch", "th(無聲)", "th(有聲)", "bl", "br", "st", "sk"];
+          const distractors = shuffle(allPhonics.filter(p => p !== item.phonics)).slice(0, 3);
+          questions.push({
+            type: "phonics-pick",
+            promptZh: "🔤 發音挑戰：聽單字發音，選出正確的字首/發音組合！",
+            target: item,
+            options: shuffle([item.phonics, ...distractors])
+          });
+        });
+      } else if (stageQA.length > 0) {
+        shuffle(stageQA).slice(0, 2).forEach(qa => {
+          questions.push({
+            type: "qa-pick",
+            promptZh: "💬 情境問答：看圖選出正確的回答！",
+            qa
+          });
+        });
+      }
+
+      // 1 Speaking / Read-aloud Challenge
+      const speakItem = shuffle(stageVocab)[0];
+      if (speakItem) {
+        questions.push({
+          type: "speak-challenge",
+          promptZh: "🎤 口說挑戰：先聽一次，再大聲唸出來！",
+          target: speakItem
+        });
+      }
+
+      return questions;
+    }
+
+    function startStage(stageId) {
+      playSFX("click");
+      const stage = STAGES.find(s => s.id === stageId);
+      state.adv = {
+        stage,
+        questions: buildStageQuestions(stage),
+        idx: 0,
+        score: 0
+      };
+      document.getElementById("adventure-map").classList.add("hidden");
+      document.getElementById("adventure-play").classList.remove("hidden");
+      renderAdvQuestion();
+    }
+
+    function renderAdvQuestion() {
+      const { stage, questions, idx, score } = state.adv;
+      if (idx >= questions.length) {
+        finishStage();
+        return;
+      }
+      const q = questions[idx];
+      document.getElementById("adv-stage-title").textContent = stage.title;
+      document.getElementById("adv-step-label").textContent = `第 ${idx + 1} / ${questions.length} 題`;
+      document.getElementById("adv-score").textContent = score;
+      document.getElementById("adv-progress-bar").style.width = `${Math.round((idx / questions.length) * 100)}%`;
+
+      const box = document.getElementById("adv-question-container");
+
+      if (q.type === "listen-pick") {
+        box.innerHTML = `
+          <div class="text-center space-y-4 animate-pop">
+            <p class="text-base sm:text-lg font-black text-slate-700">${q.promptZh}</p>
+            <button id="adv-play-audio" class="btn-push inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-sky-500 text-white font-black text-lg">
+              🔊 播放語音：<span class="text-sky-100 text-sm font-normal">（點擊重聽）</span>
+            </button>
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 max-w-2xl mx-auto pt-2">
+              ${q.options.map((opt, i) => `
+                <button data-idx="${i}" class="adv-opt card-3d bg-slate-50 hover:bg-sky-50 border-2 border-slate-200 hover:border-sky-400 rounded-2xl p-4 flex flex-col items-center gap-2">
+                  ${getVisualHTML(opt.visual, "w-20 h-20")}
+                  <span class="font-en font-black text-xl text-slate-800">${opt.en}</span>
+                  <span class="text-xs text-slate-500 font-bold">${opt.zh}</span>
+                </button>
+              `).join("")}
+            </div>
+          </div>`;
+        setTimeout(() => speakWord(q.target.en), 250);
+        document.getElementById("adv-play-audio").addEventListener("click", () => speakWord(q.target.en));
+
+        let locked = false;
+        box.querySelectorAll(".adv-opt").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (locked) return;
+            const chosen = q.options[parseInt(btn.dataset.idx, 10)];
+            if (chosen.en === q.target.en) {
+              locked = true;
+              playSFX("correct");
+              btn.classList.add("bg-emerald-50", "border-emerald-500");
+              state.adv.score += 20;
+              showToast("答對了！太棒了 🎉");
+              setTimeout(() => { state.adv.idx++; renderAdvQuestion(); }, 900);
+            } else {
+              playSFX("wrong");
+              btn.classList.add("bg-rose-50", "border-rose-400", "animate-shake");
+              speakWord(q.target.en);
+              showToast("再聽一次試試看喔！");
+            }
+          });
+        });
+      } else if (q.type === "mini-match") {
+        const left = shuffle(q.items);
+        const right = shuffle(q.items);
+        let selLeft = null;
+        let matched = 0;
+        box.innerHTML = `
+          <div class="space-y-4 animate-pop">
+            <p class="text-center text-base sm:text-lg font-black text-slate-700">${q.promptZh}</p>
+            <div class="grid grid-cols-2 gap-4 max-w-xl mx-auto">
+              <div class="space-y-3">
+                ${left.map((it, i) => `
+                  <button data-side="left" data-en="${it.en}" class="mm-btn w-full p-3 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center gap-3 font-bold text-slate-700">
+                    ${getVisualHTML(it.visual, "w-12 h-12")}
+                    <span>${it.zh}</span>
+                  </button>
+                `).join("")}
+              </div>
+              <div class="space-y-3">
+                ${right.map((it, i) => `
+                  <button data-side="right" data-en="${it.en}" class="mm-btn w-full h-[76px] p-3 rounded-2xl bg-sky-50 border-2 border-sky-200 font-en font-black text-xl text-slate-800 flex items-center justify-center">
+                    ${it.en}
+                  </button>
+                `).join("")}
+              </div>
+            </div>
+          </div>`;
+
+        box.querySelectorAll(".mm-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (btn.disabled) return;
+            if (btn.dataset.side === "left") {
+              playSFX("click");
+              box.querySelectorAll('[data-side="left"]').forEach(b => b.classList.remove("ring-4", "ring-amber-400"));
+              btn.classList.add("ring-4", "ring-amber-400");
+              selLeft = btn;
+            } else if (btn.dataset.side === "right") {
+              speakWord(btn.dataset.en);
+              if (!selLeft) {
+                showToast("請先點選左邊的圖片喔！");
+                return;
+              }
+              if (selLeft.dataset.en === btn.dataset.en) {
+                playSFX("correct");
+                selLeft.disabled = true;
+                btn.disabled = true;
+                selLeft.className = "mm-btn w-full p-3 rounded-2xl bg-emerald-100 border-2 border-emerald-400 flex items-center justify-center gap-3 font-bold text-emerald-800 opacity-75";
+                btn.className = "mm-btn w-full h-[76px] p-3 rounded-2xl bg-emerald-100 border-2 border-emerald-400 font-en font-black text-xl text-emerald-800 flex items-center justify-center opacity-75";
+                selLeft = null;
+                matched++;
+                if (matched === q.items.length) {
+                  state.adv.score += 20;
+                  showToast("全部配對成功！🌟");
+                  setTimeout(() => { state.adv.idx++; renderAdvQuestion(); }, 900);
+                }
+              } else {
+                playSFX("wrong");
+                btn.classList.add("animate-shake", "border-rose-400");
+                setTimeout(() => btn.classList.remove("animate-shake", "border-rose-400"), 400);
+              }
+            }
+          });
+        });
+      } else if (q.type === "qa-pick") {
+        const opts = shuffle(q.qa.opts);
+        box.innerHTML = `
+          <div class="text-center space-y-4 animate-pop max-w-2xl mx-auto">
+            <p class="text-base sm:text-lg font-black text-slate-700">${q.promptZh}</p>
+            <div class="bg-sky-50 rounded-3xl p-5 border-2 border-sky-100 flex flex-col sm:flex-row items-center justify-center gap-5">
+              ${getVisualHTML(q.qa.visual, "w-24 h-24")}
+              <div class="text-center sm:text-left space-y-2">
+                <p class="font-en font-black text-2xl text-slate-800">${q.qa.q}</p>
+                <p class="text-sm text-slate-500 font-bold">${q.qa.qZh}</p>
+                <button id="adv-qa-speak" class="btn-push px-4 py-1.5 rounded-xl bg-sky-500 text-white font-bold text-sm">🔊 聽問句</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              ${opts.map((opt, i) => `
+                <button data-opt="${opt}" class="adv-qa-opt card-3d p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-purple-400 font-en font-bold text-lg text-slate-800">
+                  ${opt}
+                </button>
+              `).join("")}
+            </div>
+          </div>`;
+        setTimeout(() => speakWord(q.qa.q), 250);
+        document.getElementById("adv-qa-speak").addEventListener("click", () => speakWord(q.qa.q));
+
+        let locked = false;
+        box.querySelectorAll(".adv-qa-opt").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (locked) return;
+            const val = btn.dataset.opt;
+            speakWord(val);
+            if (val === q.qa.ans) {
+              locked = true;
+              playSFX("correct");
+              btn.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-800");
+              state.adv.score += 20;
+              showToast("回答正確！👏");
+              setTimeout(() => { state.adv.idx++; renderAdvQuestion(); }, 1000);
+            } else {
+              playSFX("wrong");
+              btn.classList.add("bg-rose-50", "border-rose-400", "animate-shake");
+              showToast("再想想看喔！");
+            }
+          });
+        });
+      } else if (q.type === "phonics-pick") {
+        box.innerHTML = `
+          <div class="text-center space-y-4 animate-pop max-w-xl mx-auto">
+            <p class="text-base sm:text-lg font-black text-slate-700">${q.promptZh}</p>
+            <div class="bg-amber-50 rounded-3xl p-5 border-2 border-amber-200 space-y-3">
+              ${getVisualHTML(q.target.visual, "w-24 h-24")}
+              <p class="text-sm font-bold text-slate-600">${q.target.zh}</p>
+              <button id="adv-ph-speak" class="btn-push px-6 py-2.5 rounded-2xl bg-orange-500 text-white font-black text-base">🔊 聽單字發音</button>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              ${q.options.map(opt => `
+                <button data-opt="${opt}" class="adv-ph-opt card-3d p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-orange-400 font-en font-black text-2xl text-slate-800">
+                  ${opt}
+                </button>
+              `).join("")}
+            </div>
+          </div>`;
+        setTimeout(() => speakWord(q.target.en), 250);
+        document.getElementById("adv-ph-speak").addEventListener("click", () => speakWord(q.target.en));
+
+        let locked = false;
+        box.querySelectorAll(".adv-ph-opt").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (locked) return;
+            if (btn.dataset.opt === q.target.phonics) {
+              locked = true;
+              playSFX("correct");
+              btn.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-700");
+              state.adv.score += 20;
+              showToast(`答對！是 ${q.target.en} 🎉`);
+              setTimeout(() => { state.adv.idx++; renderAdvQuestion(); }, 950);
+            } else {
+              playSFX("wrong");
+              btn.classList.add("bg-rose-50", "border-rose-400", "animate-shake");
+              speakWord(q.target.en);
+            }
+          });
+        });
+      } else if (q.type === "speak-challenge") {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        box.innerHTML = `
+          <div class="text-center space-y-5 animate-pop max-w-lg mx-auto">
+            <p class="text-base sm:text-lg font-black text-slate-700">${q.promptZh}</p>
+            <div class="bg-indigo-50 rounded-3xl p-6 border-2 border-indigo-200 space-y-3">
+              ${getVisualHTML(q.target.visual, "w-24 h-24")}
+              <h3 class="font-en font-black text-3xl text-indigo-900">${q.target.en}</h3>
+              <p class="text-sm font-bold text-slate-500">${q.target.zh}｜例句：${q.target.ex}</p>
+              <button id="adv-sp-listen" class="btn-push px-5 py-2 rounded-xl bg-sky-500 text-white font-bold text-sm">🔊 先聽示範發音</button>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+              ${SpeechRec ? `<button id="adv-sp-mic" class="btn-push px-6 py-3 rounded-2xl bg-rose-500 text-white font-black text-base">🎙️ 按下開始唸英文</button>` : ""}
+              <button id="adv-sp-done" class="btn-push px-6 py-3 rounded-2xl bg-emerald-500 text-white font-black text-base">✅ 我大聲唸出來了！</button>
+            </div>
+            <p id="adv-sp-status" class="text-sm font-bold text-slate-500 min-h-[20px]"></p>
+          </div>`;
+
+        document.getElementById("adv-sp-listen").addEventListener("click", () => speakWord(q.target.en));
+        document.getElementById("adv-sp-done").addEventListener("click", () => {
+          playSFX("correct");
+          state.adv.score += 20;
+          state.adv.idx++;
+          renderAdvQuestion();
+        });
+
+        const micBtn = document.getElementById("adv-sp-mic");
+        if (micBtn && SpeechRec) {
+          micBtn.addEventListener("click", () => {
+            const rec = new SpeechRec();
+            rec.lang = "en-US";
+            rec.interimResults = false;
+            const statusEl = document.getElementById("adv-sp-status");
+            statusEl.textContent = "🎙️ 正在聆聽中，請大聲唸出來...";
+            rec.onresult = (e) => {
+              const transcript = e.results[0][0].transcript.toLowerCase();
+              statusEl.textContent = `辨識結果：「${transcript}」`;
+              playSFX("correct");
+              state.adv.score += 20;
+              setTimeout(() => { state.adv.idx++; renderAdvQuestion(); }, 1000);
+            };
+            rec.onerror = () => {
+              statusEl.textContent = "沒有聽到聲音，可以直接點擊「✅ 我大聲唸出來了！」過關喔！";
+            };
+            try { rec.start(); } catch (e) {}
+          });
+        }
+      }
+    }
+
+    function finishStage() {
+      const { stage, questions, score } = state.adv;
+      const maxScore = questions.length * 20;
+      const ratio = maxScore > 0 ? score / maxScore : 1;
+      const earnedStars = ratio >= 0.85 ? 3 : ratio >= 0.5 ? 2 : 1;
+      state.stars[stage.id] = Math.max(state.stars[stage.id] || 0, earnedStars);
+      saveStars();
+      updateStarsHeader();
+      playSFX("win");
+      if (typeof confetti === "function") confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+
+      document.getElementById("modal-stars").textContent = "⭐".repeat(earnedStars) + "☆".repeat(3 - earnedStars);
+      document.getElementById("modal-title").textContent = `${stage.title} 過關！`;
+      document.getElementById("modal-desc").textContent = `獲得「${stage.badge}」徽章！本關得分 ${score} / ${maxScore} 分。`;
+      const modal = document.getElementById("result-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    // =========================================================================
+    // 5. MODE 2: FLASHCARDS
+    // =========================================================================
+    function renderFlashcards(listOverride = null) {
+      const items = listOverride || getFilteredVocab();
+      const grid = document.getElementById("flashcards-grid");
+      grid.innerHTML = items.map((item, idx) => `
+        <div class="h-64 perspective-[1000px] cursor-pointer fc-card" data-en="${item.en}">
+          <div class="flip-card-inner relative w-full h-full">
+            <!-- Front -->
+            <div class="flip-face absolute inset-0 bg-white rounded-3xl p-5 shadow-md border-2 border-slate-100 hover:border-sky-300 flex flex-col items-center justify-between">
+              <span class="self-start text-xs font-bold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-600">Unit ${item.unit}</span>
+              ${getVisualHTML(item.visual, "w-20 h-20")}
+              <div class="text-center">
+                <h3 class="font-en font-black text-2xl text-slate-800">${item.en}</h3>
+              </div>
+              <div class="flex gap-2 w-full">
+                <button class="fc-speak flex-1 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm" data-text="${item.en}">🔊 唸單字</button>
+                <span class="px-3 py-2 rounded-xl bg-slate-100 text-slate-500 text-xs font-bold">點卡片翻面</span>
+              </div>
+            </div>
+            <!-- Back -->
+            <div class="flip-face flip-back absolute inset-0 bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-5 shadow-md border-2 border-amber-200 flex flex-col items-center justify-between text-center">
+              <span class="self-start text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-800">中文與例句</span>
+              <div>
+                <h3 class="text-2xl font-black text-slate-800 mb-1">${item.zh}</h3>
+                <p class="font-en font-bold text-lg text-orange-700">${item.en}</p>
+              </div>
+              <div class="bg-white/80 rounded-2xl p-3 w-full border border-amber-100">
+                <p class="font-en font-bold text-sm text-slate-700 mb-2">${item.ex}</p>
+                <button class="fc-speak px-4 py-1.5 rounded-xl bg-orange-500 text-white font-bold text-xs" data-text="${item.ex}">🔊 唸例句</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      grid.querySelectorAll(".fc-card").forEach(card => {
+        card.addEventListener("click", (e) => {
+          if (e.target.closest(".fc-speak")) return;
+          playSFX("click");
+          card.querySelector(".flip-card-inner").classList.toggle("is-flipped");
+        });
+      });
+
+      grid.querySelectorAll(".fc-speak").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          speakWord(btn.dataset.text);
+        });
+      });
+    }
+
+    // =========================================================================
+    // 6. MODE 3: WORD MATCHING GAME
+    // =========================================================================
+    function initMatchGame() {
+      const pool = getFilteredVocab();
+      const chosen = shuffle(pool).slice(0, Math.min(5, pool.length));
+      state.match = {
+        selectedLeft: null,
+        pairs: chosen,
+        matchedCount: 0,
+        combo: state.match.combo || 0
+      };
+      document.getElementById("match-combo").textContent = state.match.combo;
+
+      const leftList = shuffle(chosen);
+      const rightList = shuffle(chosen);
+
+      const leftEl = document.getElementById("match-left");
+      const rightEl = document.getElementById("match-right");
+
+      leftEl.innerHTML = leftList.map(it => `
+        <button data-en="${it.en}" class="m-left w-full p-3 sm:p-4 rounded-2xl bg-amber-50 hover:bg-amber-100 border-2 border-amber-200 flex items-center justify-center gap-3 font-bold text-slate-800 transition-all">
+          ${getVisualHTML(it.visual, "w-12 h-12")}
+          <span class="text-sm sm:text-base">${it.zh}</span>
+        </button>
+      `).join("");
+
+      rightEl.innerHTML = rightList.map(it => `
+        <button data-en="${it.en}" class="m-right w-full h-[76px] sm:h-[84px] p-3 rounded-2xl bg-sky-50 hover:bg-sky-100 border-2 border-sky-200 font-en font-black text-lg sm:text-xl text-slate-800 flex items-center justify-center transition-all">
+          ${it.en}
+        </button>
+      `).join("");
+
+      leftEl.querySelectorAll(".m-left").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (btn.disabled) return;
+          playSFX("click");
+          leftEl.querySelectorAll(".m-left").forEach(b => b.classList.remove("ring-4", "ring-amber-400"));
+          btn.classList.add("ring-4", "ring-amber-400");
+          state.match.selectedLeft = btn;
+        });
+      });
+
+      rightEl.querySelectorAll(".m-right").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (btn.disabled) return;
+          speakWord(btn.dataset.en);
+          const sel = state.match.selectedLeft;
+          if (!sel) {
+            showToast("請先點選左邊的圖片或中文！");
+            return;
+          }
+          if (sel.dataset.en === btn.dataset.en) {
+            playSFX("correct");
+            sel.disabled = true;
+            btn.disabled = true;
+            sel.className = "m-left w-full p-3 sm:p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-400 flex items-center justify-center gap-3 font-bold text-emerald-800 opacity-75";
+            btn.className = "m-right w-full h-[76px] sm:h-[84px] p-3 rounded-2xl bg-emerald-100 border-2 border-emerald-400 font-en font-black text-lg sm:text-xl text-emerald-800 flex items-center justify-center opacity-75";
+            state.match.selectedLeft = null;
+            state.match.matchedCount++;
+            state.match.combo++;
+            document.getElementById("match-combo").textContent = state.match.combo;
+
+            if (state.match.matchedCount === state.match.pairs.length) {
+              playSFX("win");
+              if (typeof confetti === "function") confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+              showToast("太厲害了！換下一組題目囉！");
+              setTimeout(initMatchGame, 1100);
+            }
+          } else {
+            playSFX("wrong");
+            state.match.combo = 0;
+            document.getElementById("match-combo").textContent = 0;
+            btn.classList.add("animate-shake", "border-rose-400");
+            setTimeout(() => btn.classList.remove("animate-shake", "border-rose-400"), 400);
+          }
+        });
+      });
+    }
+
+    // =========================================================================
+    // 7. MODE 4: SENTENCE Q&A
+    // =========================================================================
+    function initQAGame() {
+      let pool = state.selectedUnit === 0 ? QA_BANK : QA_BANK.filter(q => q.unit === state.selectedUnit);
+      if (pool.length === 0) pool = QA_BANK;
+      state.qa = { list: shuffle(pool), idx: 0, score: 0, total: 0, answered: false };
+      renderQAQuestion();
+    }
+
+    function renderQAQuestion() {
+      const { list, idx, score, total } = state.qa;
+      document.getElementById("qa-score").textContent = score;
+      document.getElementById("qa-total").textContent = total;
+      const item = list[idx % list.length];
+      state.qa.answered = false;
+      const opts = shuffle(item.opts);
+
+      const container = document.getElementById("qa-container");
+      container.innerHTML = `
+        <div class="space-y-5 max-w-2xl mx-auto animate-pop">
+          <div class="bg-purple-50 rounded-3xl p-5 border-2 border-purple-100 flex flex-col sm:flex-row items-center gap-5">
+            ${getVisualHTML(item.visual, "w-24 h-24")}
+            <div class="text-center sm:text-left space-y-2 flex-1">
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-200 text-purple-800">Unit ${item.unit}</span>
+              <h3 class="font-en font-black text-2xl sm:text-3xl text-slate-800">${item.q}</h3>
+              <p class="text-sm font-bold text-slate-500">${item.qZh}</p>
+              <button id="qa-speak-q" class="btn-push px-4 py-1.5 rounded-xl bg-purple-500 text-white font-bold text-sm">🔊 唸出問句</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            ${opts.map(opt => `
+              <button data-opt="${opt}" class="qa-opt card-3d p-4 rounded-2xl bg-slate-50 hover:bg-purple-50 border-2 border-slate-200 hover:border-purple-400 font-en font-bold text-lg text-slate-800 text-center">
+                ${opt}
+              </button>
+            `).join("")}
+          </div>
+        </div>`;
+
+      document.getElementById("qa-speak-q").addEventListener("click", () => speakWord(item.q));
+      container.querySelectorAll(".qa-opt").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const val = btn.dataset.opt;
+          speakWord(val);
+          if (state.qa.answered) return;
+          state.qa.answered = true;
+          state.qa.total++;
+          if (val === item.ans) {
+            playSFX("correct");
+            state.qa.score++;
+            btn.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-800");
+            showToast("答對了！🎉");
+          } else {
+            playSFX("wrong");
+            btn.classList.add("bg-rose-50", "border-rose-400", "animate-shake");
+            container.querySelectorAll(".qa-opt").forEach(b => {
+              if (b.dataset.opt === item.ans) b.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-800");
+            });
+          }
+          document.getElementById("qa-score").textContent = state.qa.score;
+          document.getElementById("qa-total").textContent = state.qa.total;
+        });
+      });
+    }
+
+    // =========================================================================
+    // 8. MODE 5: PHONICS CHALLENGE (Pronounces ONLY complete words, NEVER letters!)
+    // =========================================================================
+    function initPhonicsMode() {
+      const phonicsVocab = VOCAB.filter(v => v.phonics);
+      state.phonics.list = shuffle(phonicsVocab);
+      state.phonics.idx = 0;
+      state.phonics.score = 0;
+      renderPhonicsSubView();
+    }
+
+    function renderPhonicsSubView() {
+      const isQuiz = state.phonics.subMode === "quiz";
+      document.getElementById("phonics-quiz-area").classList.toggle("hidden", !isQuiz);
+      document.getElementById("phonics-board-area").classList.toggle("hidden", isQuiz);
+      if (isQuiz) renderPhonicsQuiz();
+      else renderPhonicsBoard();
+    }
+
+    function renderPhonicsQuiz() {
+      const { list, idx, score } = state.phonics;
+      const item = list[idx % list.length];
+      const allGroups = ["sh", "ch", "th(無聲)", "th(有聲)", "bl", "br", "st", "sk"];
+      const opts = shuffle([item.phonics, ...shuffle(allGroups.filter(g => g !== item.phonics)).slice(0, 3)]);
+
+      const area = document.getElementById("phonics-quiz-area");
+      area.innerHTML = `
+        <div class="max-w-xl mx-auto text-center space-y-5 animate-pop">
+          <div class="flex items-center justify-between text-sm font-bold text-slate-500">
+            <span>Unit ${item.unit} 自然發音挑戰</span>
+            <span class="px-3 py-1 rounded-full bg-orange-50 text-orange-700 border border-orange-200">答對題數：${score}</span>
+          </div>
+          <div class="bg-amber-50 rounded-3xl p-6 border-2 border-amber-200 space-y-3">
+            ${getVisualHTML(item.visual, "w-24 h-24")}
+            <p class="text-base font-bold text-slate-600">${item.zh}</p>
+            <button id="ph-play-word" class="btn-push px-6 py-3 rounded-2xl bg-orange-500 text-white font-black text-lg">
+              🔊 唸出單字
+            </button>
+            <p class="text-xs text-amber-700 font-medium">※ 系統只會唸出完整單字，請聽音辨識正確的發音組合！</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            ${opts.map(opt => `
+              <button data-opt="${opt}" class="ph-opt card-3d p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-orange-400 font-en font-black text-2xl text-slate-800">
+                ${opt}
+              </button>
+            `).join("")}
+          </div>
+        </div>`;
+
+      document.getElementById("ph-play-word").addEventListener("click", () => speakWord(item.en));
+      let locked = false;
+      area.querySelectorAll(".ph-opt").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (locked) return;
+          if (btn.dataset.opt === item.phonics) {
+            locked = true;
+            playSFX("correct");
+            state.phonics.score++;
+            btn.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-700");
+            showToast(`答對了！${item.en} (${item.phonics}) 🎉`);
+            setTimeout(() => { state.phonics.idx++; renderPhonicsQuiz(); }, 950);
+          } else {
+            playSFX("wrong");
+            btn.classList.add("bg-rose-50", "border-rose-400", "animate-shake");
+            speakWord(item.en);
+          }
+        });
+      });
+    }
+
+    function renderPhonicsBoard() {
+      const groups = [
+        { title: "Unit 9：sh / ch", keys: ["sh", "ch"], color: "bg-sky-50 border-sky-200 text-sky-800" },
+        { title: "Unit 10：th (無聲 / 有聲)", keys: ["th(無聲)", "th(有聲)"], color: "bg-emerald-50 border-emerald-200 text-emerald-800" },
+        { title: "Unit 11：bl / br", keys: ["bl", "br"], color: "bg-purple-50 border-purple-200 text-purple-800" },
+        { title: "Unit 12：st / sk", keys: ["st", "sk"], color: "bg-amber-50 border-amber-200 text-amber-800" }
+      ];
+
+      const board = document.getElementById("phonics-board-area");
+      board.innerHTML = groups.map(g => {
+        const words = VOCAB.filter(v => g.keys.includes(v.phonics));
+        return `
+          <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
+            <h3 class="text-lg font-black text-slate-800 mb-3">${g.title}</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              ${words.map(w => `
+                <button data-word="${w.en}" class="ph-board-btn card-3d p-3 rounded-2xl border-2 ${g.color} flex flex-col items-center gap-1.5 text-center">
+                  <span class="text-xs font-bold opacity-75">${w.phonics}</span>
+                  ${getVisualHTML(w.visual, "w-14 h-14")}
+                  <span class="font-en font-black text-lg">${w.en}</span>
+                  <span class="text-xs font-bold text-slate-600">${w.zh}</span>
+                </button>
+              `).join("")}
+            </div>
+          </div>`;
+      }).join("");
+
+      board.querySelectorAll(".ph-board-btn").forEach(btn => {
+        btn.addEventListener("click", () => speakWord(btn.dataset.word));
+      });
+    }
+
+    // =========================================================================
+    // 9. EVENT LISTENERS & INITIALIZATION
+    // =========================================================================
+    document.getElementById("btn-home").addEventListener("click", () => switchMode("adventure"));
+    document.getElementById("btn-back-map").addEventListener("click", renderAdventureMap);
+
+    document.querySelectorAll(".mode-tab").forEach(tab => {
+      tab.addEventListener("click", () => switchMode(tab.dataset.mode));
+    });
+
+    document.getElementById("btn-speed").addEventListener("click", (e) => {
+      playSFX("click");
+      if (state.speechRate < 0.85) {
+        state.speechRate = 0.98;
+        e.target.textContent = "🐇 正常";
+      } else {
+        state.speechRate = 0.72;
+        e.target.textContent = "🐢 慢速";
+      }
+    });
+
+    document.getElementById("btn-sfx").addEventListener("click", (e) => {
+      state.sfxEnabled = !state.sfxEnabled;
+      e.target.textContent = state.sfxEnabled ? "🔊" : "🔇";
+      if (state.sfxEnabled) playSFX("click");
+    });
+
+    document.getElementById("btn-reset-unit").addEventListener("click", () => {
+      state.selectedUnit = 0;
+      renderUnitPills();
+      refreshActiveMode();
+    });
+
+    document.getElementById("btn-fc-shuffle").addEventListener("click", () => {
+      playSFX("click");
+      renderFlashcards(shuffle(getFilteredVocab()));
+    });
+
+    document.getElementById("btn-match-restart").addEventListener("click", () => {
+      playSFX("click");
+      initMatchGame();
+    });
+
+    document.getElementById("btn-qa-next").addEventListener("click", () => {
+      playSFX("click");
+      state.qa.idx++;
+      renderQAQuestion();
+    });
+
+    document.getElementById("btn-phonics-quiz-mode").addEventListener("click", () => {
+      playSFX("click");
+      state.phonics.subMode = "quiz";
+      renderPhonicsSubView();
+    });
+
+    document.getElementById("btn-phonics-board-mode").addEventListener("click", () => {
+      playSFX("click");
+      state.phonics.subMode = "board";
+      renderPhonicsSubView();
+    });
+
+    document.getElementById("btn-modal-retry").addEventListener("click", () => {
+      document.getElementById("result-modal").classList.add("hidden");
+      document.getElementById("result-modal").classList.remove("flex");
+      startStage(state.adv.stage.id);
+    });
+
+    document.getElementById("btn-modal-close").addEventListener("click", () => {
+      document.getElementById("result-modal").classList.add("hidden");
+      document.getElementById("result-modal").classList.remove("flex");
+      renderAdventureMap();
+    });
+
+    window.addEventListener("load", () => {
+      updateStarsHeader();
+      renderUnitPills();
+      renderAdventureMap();
+      if ("speechSynthesis" in window) window.speechSynthesis.getVoices();
+    });
+  </script>
+</body>
+</html>
